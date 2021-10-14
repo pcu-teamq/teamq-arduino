@@ -67,8 +67,6 @@ void loop()  {
   lcd.print(":");
   lcd.print(myRTC.minutes);
 
-  delay(1000);
-
   lcd.setCursor(0,1);
  lcd_key = read_LCD_buttons();
 
