@@ -1,97 +1,53 @@
-//Sample using LiquidCrystal library
+#include <virtuabotixRTC.h>
+#include <Wire.h>
 #include <LiquidCrystal.h>
 
-/*******************************************************
-
-This program will test the LCD panel and the buttons
-Mark Bramwell, July 2010
-
-********************************************************/
-
-// select the pins used on the LCD panel
+virtuabotixRTC myRTC(6, 7, 8);
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
-
-// define some values used by the panel and buttons
 int lcd_key     = 0;
 int adc_key_in  = 0;
-#define btnRIGHT  0
-#define btnUP     1
-#define btnDOWN   2
-#define btnLEFT   3
-#define btnSELECT 4
-#define btnNONE   5
 
-// read the buttons
-int read_LCD_buttons()
-{
- adc_key_in = analogRead(0);      // read the value from the sensor
- // my buttons when read are centered at these valies: 0, 144, 329, 504, 741
- // we add approx 50 to those values and check to see if we are close
- //if (adc_key_in > 1000) return btnNONE; // We make this the 1st option for speed reasons since it will be the most likely result
- // For V1.1 us this threshold
- if (adc_key_in < 50)   return btnRIGHT;
- if (adc_key_in < 250)  return btnUP;
- if (adc_key_in < 450)  return btnDOWN;
- if (adc_key_in < 650)  return btnLEFT;
- if (adc_key_in < 850)  return btnSELECT;
-
- // For V1.0 comment the other threshold and use the one below:
-/*
- if (adc_key_in < 50)   return btnRIGHT;
- if (adc_key_in < 195)  return btnUP;
- if (adc_key_in < 380)  return btnDOWN;
- if (adc_key_in < 555)  return btnLEFT;
- if (adc_key_in < 790)  return btnSELECT;
-*/
-
-
- return btnNONE;  // when all others fail, return this...
+void setup()  {
+  lcd.begin(16, 2);              // start the library
+  lcd.setCursor(0,0);
+  myRTC.setDS1302Time(00, 20, 42, 1, 13, 10, 2021);
 }
 
-void setup()
-{
- lcd.begin(16, 2);              // start the library
- lcd.setCursor(0,0);
- lcd.print("clock"); // print a simple message
-}
+void loop()  {
+  myRTC.updateTime();
+  lcd.setCursor(1,0);
+  switch (myRTC.dayofweek) {
+    case 1: 
+      lcd.print("SUN ");
+      break;
+    case 2: 
+      lcd.print("MON ");
+      break;
+    case 3: 
+      lcd.print("TUE ");
+      break;
+    case 4:   
+      lcd.print("WED ");
+      break;
+    case 5:  
+      lcd.print("THU ");
+      break;
+    case 6:   
+      lcd.print("FRI ");
+      break;
+    case 7:    
+      lcd.print("SAT ");
+      break;
+  } 
+  
+  lcd.print(myRTC.month);
+  lcd.print("/");
+  lcd.print(myRTC.dayofmonth); 
+  lcd.print(" ");
+      
+  lcd.print(myRTC.hours);
+  lcd.print(":");
+  lcd.print(myRTC.minutes);
 
-void loop()
-{
- lcd.setCursor(0,1);            // move to the begining of the second line
- lcd_key = read_LCD_buttons();  // read the buttons
-
- switch (lcd_key)               // depending on which button was pushed, we perform an action
- {
-   case btnRIGHT:
-     {
-     lcd.print("Remove     ");
-     break;
-     }
-   case btnLEFT:
-     {
-     lcd.print("Enrollment");
-     break;
-     }
-   case btnUP:
-     {
-     lcd.print("Go to work");
-     break;
-     }
-   case btnDOWN:
-     {
-     lcd.print("Off work  ");
-     break;
-     }
-   case btnSELECT:
-     {
-     lcd.print("SELECT    ");
-     break;
-     }
-     /*case btnNONE:
-     {
-     lcd.print("NONE      ");
-     break;
-     }*/
- }
-
+  delay(1000);
 }
