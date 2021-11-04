@@ -48,7 +48,6 @@ int read_LCD_buttons()
 void setup()
 {
     lcd.begin(16, 2); // LCD spec 16x2 Display define
-    lcd.setCursor(0, 0); // LCD global setting
     myRTC.setDS1302Time(00, 20, 42, 1, 13, 10, 2021); // RTC default Time setting
 }
 
